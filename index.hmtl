@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pedro — Proyecto Monetizable (Demo)</title>
+  <meta name="description" content="Página demo para monetizar: donaciones, venta digital y afiliados. Bilingüe (ES/EN).">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#7dd3fc;
+      --muted:#9aa6b2;
+      --glass: rgba(255,255,255,0.03);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color-scheme: dark;
+    }
+    html,body{height:100%; margin:0; background:linear-gradient(180deg,#071029 0%, #07121a 60%); color:#eef2ff;}
+    .container{max-width:980px;margin:36px auto;padding:24px;}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    h1{font-size:1.6rem;margin:0}
+    p.lead{color:var(--muted);margin:8px 0 20px}
+    .grid{display:grid;grid-template-columns:1fr;gap:18px}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{background:linear-gradient(90deg,var(--accent),#60a5fa);border:none;padding:10px 14px;border-radius:10px;color:#04263a;font-weight:600;cursor:pointer}
+    .secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .small{font-size:0.85rem;color:var(--muted)}
+    label{display:block;font-size:0.85rem;margin-bottom:6px}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:inherit}
+    footer{margin-top:28px;color:var(--muted);font-size:0.82rem;text-align:center}
+    /* miner visual */
+    .miner-visual{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .hash-box{flex:1;padding:12px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);font-family:monospace;overflow:auto;height:120px}
+    .stats{width:220px;text-align:left}
+    .payments{display:flex;gap:10px;flex-wrap:wrap}
+    .payment-btn{padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+    .badge{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:600}
+    .lang-toggle{display:flex;gap:8px;align-items:center}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Pedro — Monetización Demo <span class="small">/ Demo & Monetize</span></h1>
+        <p class="lead">Página estática lista para GitHub Pages. Inserta tus IDs de pago y enlaces de afiliado para monetizar.</p>
+      </div>
+      <div class="lang-toggle">
+        <button id="btn-es" class="secondary">ES</button>
+        <button id="btn-en" class="secondary">EN</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- 1: Hero / CTA -->
+      <section class="card" id="hero">
+        <div class="row" style="align-items:center;justify-content:space-between">
+          <div style="flex:1">
+            <h2 data-es="Bienvenido — Demo educativo" data-en="Welcome — Educational Demo">Bienvenido — Demo educativo</h2>
+            <p class="small" data-es="Esta página incluye simulador visual (no minado real), botones de pago, afiliados y espacio para anunciar." data-en="This page includes a visual simulator (not real mining), payment buttons, affiliates and ad space.">
+              Esta página incluye simulador visual (no minado real), botones de pago, afiliados y espacio para anunciar.
+            </p>
+            <div style="margin-top:12px">
+              <button class="btn" onclick="document.getElementById('monetize').scrollIntoView()">Monetizar / Monetize</button>
+              <button class="secondary" onclick="document.getElementById('miner').scrollIntoView()">Ver simulador</button>
+            </div>
+          </div>
+          <div style="width:220px;text-align:right">
+            <div class="badge">Meta: USD $20 / día</div>
+            <p class="small" style="margin-top:8px">Objetivo: generar ingresos combinando afiliados, ventas y donaciones.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2: Simulador (visual, educativo) -->
+      <section class="card" id="miner">
+        <h3 data-es="Simulador de Minería (educativo)" data-en="Mining Simulator (educational)">Simulador de Minería (educativo)</h3>
+        <p class="small" data-es="Simulación en tiempo real de intentos de hashing. No mina Bitcoin — solo muestra el proceso PoW." data-en="Real-time simulation of hashing attempts. Does NOT mine Bitcoin — only shows the PoW process.">Simulación en tiempo real de intentos de hashing. No mina Bitcoin — solo muestra el proceso PoW.</p>
+        <div class="miner-visual" style="margin-top:12px">
+          <div class="hash-box" id="hashlog"></div>
+          <div class="stats">
+            <div><strong>Tries:</strong> <span id="tries">0</span></div>
+            <div><strong>H/s (sim):</strong> <span id="hs">0</span></div>
+            <div><strong>Nonce:</strong> <span id="nonce">-</span></div>
+            <div style="margin-top:8px">
+              <button class="btn" id="startSim">Iniciar / Start</button>
+              <button class="secondary" id="stopSim">Detener / Stop</button>
+            </div>
+          </div>
+        </div>
+        <p class="small" style="margin-top:10px" data-es="Nota: este simulador es para fines educativos y visuales." data-en="Note: this simulator is for educational and visual purposes.">Nota: este simulador es para fines educativos y visuales.</p>
+      </section>
+
+      <!-- 3: Monetización -->
+      <section class="card" id="monetize">
+        <h3 data-es="Opciones de Monetización" data-en="Monetization Options">Opciones de Monetización</h3>
+        <p class="small" data-es="Coloca aquí tus credenciales/links. Reemplaza los placeholders." data-en="Place your credentials/links here. Replace placeholders.">Coloca aquí tus credenciales/links. Reemplaza los placeholders.</p>
+
+        <!-- Payments / Donations -->
+        <div style="margin-top:12px">
+          <h4>Donaciones y pagos / Donations & Payments</h4>
+          <div class="payments" style="margin-top:8px">
+            <!-- PayPal button (example: replace client/order IDs) -->
+            <div class="payment-btn card">
+              <div style="font-weight:700">PayPal</div>
+              <div class="small">Botón PayPal (usa tu Smart Button / PayPal Checkout)</div>
+              <div style="margin-top:8px">
+                <!-- Placeholder: reemplazar con tu botón real -->
+                <a class="btn" href="#" onclick="alert('Reemplaza con tu enlace/ID PayPal')">Pagar / Pay</a>
+              </div>
+            </div>
+
+            <div class="payment-btn card">
+              <div style="font-weight:700">Stripe (Tarjetas)</div>
+              <div class="small">Integra Stripe Checkout / Payment Links</div>
+              <div style="margin-top:8px">
+                <a class="btn" href="#" onclick="alert('Reemplaza con tu Payment Link de Stripe')">Pagar con Tarjeta</a>
+              </div>
+            </div>
+
+            <div class="payment-btn card">
+              <div style="font-weight:700">CashApp / Zelle / Transfer</div>
+              <div class="small">Muestra tu $cashtag, email o número</div>
+              <div style="margin-top:8px">
+                <div class="small">CashApp: <strong id="cashTag">$TUCASHTAG</strong></div>
+                <div class="small">Zelle: <strong id="zelleEmail">tu@correo.com</strong></div>
+                <div class="small">Banco Popular: <strong id="bankAcc">000-000-000</strong></div>
+              </div>
+            </div>
+          </div>
+          <p class="small" style="margin-top:8px">Sugerencia: usa enlaces de pago directos (Gumroad, Stripe, PayPal) para convertir mejor.</p>
+        </div>
+
+        <!-- Affiliates -->
+        <div style="margin-top:14px">
+          <h4>Afiliados / Affiliate Links</h4>
+          <p class="small">Coloca aquí enlaces de afiliado (Amazon, ClickBank, etc.). Ejemplo de tarjeta de producto:</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+            <div style="background:var(--glass);padding:10px;border-radius:10px;width:260px">
+              <div style="height:120px;background:linear-gradient(90deg,#071029,#09203a);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center">IMAGEN</div>
+              <div style="font-weight:700">Producto Afiliado</div>
+              <div class="small">Comisión estimada: $X</div>
+              <div style="margin-top:8px"><a class="btn" href="#" onclick="alert('Pega aquí tu enlace de afiliado')">Ver / Buy</a></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Digital product -->
+        <div style="margin-top:14px">
+          <h4>Vende un producto digital</h4>
+          <p class="small">Ofrece un PDF exclusivo, audio de meditación o sistema (descarga inmediata vía Gumroad/Stripe).</p>
+          <div style="margin-top:8px">
+            <label for="prodPrice" data-es="Precio sugerido (US$)" data-en="Suggested price (US$)">Precio sugerido (US$)</label>
+            <input id="prodPrice" type="number" value="7">
+            <div style="margin-top:8px">
+              <a class="btn" href="#" onclick="alert('Reemplaza con tu enlace de producto (Gumroad, Sellfy)')">Crear enlace de venta</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ads -->
+        <div style="margin-top:14px">
+          <h4>Espacio para anuncios (Google AdSense)</h4>
+          <p class="small">Pon un bloque de AdSense en producción: pega aquí tu snippet de AdSense cuando la cuenta esté aprobada.</p>
+          <div style="height:90px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;border-radius:8px">AdSense placeholder</div>
+        </div>
+      </section>
+
+      <!-- 4: Capture leads -->
+      <section class="card">
+        <h3 data-es="Captura de Emails" data-en="Email Capture">Captura de Emails</h3>
+        <p class="small">Conecta Mailchimp / ConvertKit / Formspree. Aquí tienes un formulario estático que envía por Formspree (requiere configurar).</p>
+        <form id="leadForm" action="https://formspree.io/f/your-form-id" method="POST" class="row" style="gap:12px">
+          <div style="flex:1">
+            <label data-es="Nombre" data-en="Name">Nombre</label>
+            <input name="name" placeholder="Pedro">
+          </div>
+          <div style="flex:1">
+            <label data-es="Correo" data-en="Email">Correo</label>
+            <input name="email" type="email" placeholder="tu@correo.com">
+          </div>
+          <div style="width:100%">
+            <label data-es="Mensaje" data-en="Message">Mensaje</label>
+            <textarea name="message" rows="3" placeholder="¿Cómo te puedo ayudar?"></textarea>
+          </div>
+          <div style="width:100%">
+            <button class="btn" type="submit">Suscribirme / Subscribe</button>
+          </div>
+        </form>
+        <p class="small" style="margin-top:10px">Reemplaza `action` por tu endpoint de Formspree o la integración que uses.</p>
+      </section>
+
+      <!-- 5: Tips y estimaciones -->
+      <section class="card">
+        <h3 data-es="Plan para alcanzar USD 20/día (estimación)" data-en="Plan to reach USD 20/day (estimate)">Plan para alcanzar USD 20/día (estimación)</h3>
+        <ol class="small">
+          <li><strong>Productos/Comisiones:</strong> define un producto de $7 (digital) o comisiones de $5 por venta.</li>
+          <li><strong>Tasa de conversión:</strong> si conviertes 1% de visitantes, para $20/día con comisión $5 necesitas ~400 visitantes/día.</li>
+          <li><strong>Tráfico:</strong> invierte en anuncios o SEO para alcanzar 300–500 visitantes/día, o mejora la conversión con ofertas/bonos.</li>
+          <li><strong>Combina fuentes:</strong> afiliados + ventas + donaciones + AdSense.</li>
+        </ol>
+        <p class="small" style="margin-top:8px;color:#fef3c7">Nota: ingresos variables. No se garantiza $20/día; depende de tráfico, oferta, precios y conversión.</p>
+      </section>
+
+      <!-- 6: Readme / Deploy -->
+      <section class="card">
+        <h3>Deploy rápido en GitHub Pages</h3>
+        <ol class="small">
+          <li>Crea un repo nuevo en GitHub (ej.: `monetiza-demo`).</li>
+          <li>Sube este archivo como `index.html` en la rama `main` o `gh-pages`.</li>
+          <li>En GitHub: Settings → Pages → selecciona `main` (root) y guarda. Espera 1–5 minutos.</li>
+          <li>Reemplaza todos los placeholders (Formspree, PayPal link, Stripe link, afiliados, AdSense).</li>
+        </ol>
+        <p class="small">Si quieres, yo puedo generar también el `README.md` listo para tu repo.</p>
+      </section>
+    </main>
+
+    <footer>
+      <div>Hecho para ti — Pedro. <span class="small">No garantizo ingresos; esto es una plantilla.</span></div>
+    </footer>
+  </div>
+
+  <script>
+    // Language toggle (bilingüe simple)
+    const setLang = (lang) => {
+      document.querySelectorAll('[data-es]').forEach(el=>{
+        const es = el.getAttribute('data-es');
+        const en = el.getAttribute('data-en') || es;
+        el.textContent = (lang === 'en') ? en : es;
+      });
+    };
+    document.getElementById('btn-en').addEventListener('click', ()=>setLang('en'));
+    document.getElementById('btn-es').addEventListener('click', ()=>setLang('es'));
+
+    // Miner simulator (visual)
+    let running=false;
+    let tries=0;
+    let hs=0;
+    let nonce=0;
+    const hashlog = document.getElementById('hashlog');
+    const triesEl = document.getElementById('tries');
+    const hsEl = document.getElementById('hs');
+    const nonceEl = document.getElementById('nonce');
+    const startBtn = document.getElementById('startSim');
+    const stopBtn = document.getElementById('stopSim');
+    let simInterval=null;
+
+    function randHex(len){
+      let s='';
+      const chars='0123456789abcdef';
+      for(let i=0;i<len;i++) s+=chars[Math.floor(Math.random()*16)];
+      return s;
+    }
+
+    function appendLog(txt){
+      const line = document.createElement('div');
+      line.textContent = txt;
+      hashlog.prepend(line);
+      // keep only last ~80 lines
+      while(hashlog.childElementCount>120) hashlog.removeChild(hashlog.lastChild);
+    }
+
+    function startSim(){
+      if(running) return;
+      running=true;
+      tries=0; hs=0; nonce=0;
+      triesEl.textContent='0'; hsEl.textContent='0'; nonceEl.textContent='-';
+      appendLog('--- simulador iniciado ---');
+      const startTime = Date.now();
+      simInterval = setInterval(()=>{
+        // simulate attempts per tick
+        const attempts = 100 + Math.floor(Math.random()*400);
+        tries += attempts;
+        nonce += Math.floor(Math.random()*1000);
+        // simulated H/s approx:
+        const elapsed = Math.max((Date.now()-startTime)/1000,1);
+        hs = Math.round(tries/elapsed);
+        triesEl.textContent = tries.toLocaleString();
+        hsEl.textContent = hs.toLocaleString();
+        nonceEl.textContent = nonce;
+        // show one hash line
+        const hex = randHex(64);
+        appendLog('nonce:'+nonce+' hash:'+hex.substring(0,20)+'…');
+        // random "found" event for fun (very rare)
+        if(Math.random()<0.0006){
+          appendLog('→ FOUND! nonce='+nonce+' (simulado)');
+          running=false;
+          clearInterval(simInterval);
+        }
+      }, 120);
+    }
+
+    function stopSim(){
+      running=false;
+      if(simInterval) clearInterval(simInterval);
+      appendLog('--- simulador detenido ---');
+    }
+
+    startBtn.addEventListener('click', startSim);
+    stopBtn.addEventListener('click', stopSim);
+
+    // initialize language to Spanish
+    setLang('es');
+  </script>
+</body>
+</html>
